@@ -163,35 +163,37 @@ function loadSubjects() {
 
     if (!year) return;
 
-    let table = 
+    let table = `
     <table>
         <tr>
             <th>المادة</th>
             <th>الساعات</th>
             <th>الرمز</th>
             <th>استثناء</th>
-        </tr>;
+        </tr>`;
 
     subjectsData[year].forEach(sub => {
-        table += 
+        table += `
         <tr data-subject="${sub[0]}">
             <td class="subject-name">${sub[0]}</td>
             <td>${sub[1]}</td>
             <td>
                 <select class="grade" data-hours="${sub[1]}">
                     <option value="">-- اختر --</option>
-                    ${Object.keys(gradeValues).map(g => <option value="${g}">${g}</option>).join("")}
+                    ${Object.keys(gradeValues)
+                        .map(g => `<option value="${g}">${g}</option>`)
+                        .join("")}
                 </select>
             </td>
             <td>
                 <button onclick="toggleExclude(this)">استثناء</button>
             </td>
-        </tr>;
+        </tr>`;
     });
 
     table += "</table>";
     div.innerHTML = table;
-}
+        }
 
 function toggleExclude(button) {
     const row = button.closest("tr");
