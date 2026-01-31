@@ -79,10 +79,10 @@ button {
 <hr>
 
 <h3>المعدل السابق</h3>
-<input type="number" id="prevGPA" step="0.0001" placeholder="مثال : 3.1250 أو 0">
+<input type="number" id="prevGPA" step="0.0001" placeholder=" مثلًا 3.26 / 2.79 ... وإذا بدك تحسب معدل هذه السنة فقط فَـ ضع 0 ">
 
 <h3>عدد الساعات السابقة</h3>
-<input type="number" id="prevHours" placeholder="مثال : 60 أو 0">
+<input type="number" id="prevHours" placeholder="مثلًا 136 ، 64 ... وإذا بدك  تحسب معدل هذه السنة فقط فَـ ضع 0 ">
 
 <h3>اختر السنة</h3>
 <select id="yearSelect" onchange="loadSubjects()">
@@ -120,7 +120,6 @@ const gradeValues = {
 // المواد حسب السنة
 const subjectsData = {
     4: [
-        ["مقدمة في الطب السريري واخلاقيات مهنة الطب ١", 4],
         ["التخدير والعناية الحثيثة", 3],
         ["جراحة العظام والمفاصل", 4],
         ["علوم عصبية سريرية", 3],
@@ -164,30 +163,30 @@ function loadSubjects() {
 
     if (!year) return;
 
-    let table = `
+    let table = 
     <table>
         <tr>
             <th>المادة</th>
             <th>الساعات</th>
             <th>الرمز</th>
             <th>استثناء</th>
-        </tr>`;
+        </tr>;
 
     subjectsData[year].forEach(sub => {
-        table += `
+        table += 
         <tr data-subject="${sub[0]}">
             <td class="subject-name">${sub[0]}</td>
             <td>${sub[1]}</td>
             <td>
                 <select class="grade" data-hours="${sub[1]}">
                     <option value="">-- اختر --</option>
-                    ${Object.keys(gradeValues).map(g => `<option value="${g}">${g}</option>`).join("")}
+                    ${Object.keys(gradeValues).map(g => <option value="${g}">${g}</option>).join("")}
                 </select>
             </td>
             <td>
                 <button onclick="toggleExclude(this)">استثناء</button>
             </td>
-        </tr>`;
+        </tr>;
     });
 
     table += "</table>";
