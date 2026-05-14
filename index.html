@@ -1,9 +1,9 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>حاسبة المعدّل</title>
-
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -11,7 +11,6 @@ body {
     direction: rtl;
     text-align: center;
 }
-
 .container {
     max-width: 950px;
     margin: auto;
@@ -19,72 +18,57 @@ body {
     padding: 20px;
     border-radius: 10px;
 }
-
 h1 {
     margin-bottom: 5px;
 }
-
 h3 {
     margin-top: 4px;
-    font-size: 20px;      /* خط أكبر شوي */
-    color: #0f5132;       /* أخضر غامق */
-    font-weight: bold;   /* Bold */
+    font-size: 20px;
+    color: #0f5132;
+    font-weight: bold;
 }
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
-
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
 }
-
 select, input {
     padding: 6px;
     width: 100%;
 }
-
 button {
     padding: 6px 12px;
     cursor: pointer;
 }
-
 .excluded-row {
     background-color: #f0f0f0;
 }
-
 .excluded-row .subject-name {
     text-decoration: line-through;
     color: #888;
 }
-
 #result {
     white-space: pre-line;
     margin-top: 20px;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-
 <img src="logo.png" alt="شعار الجامعة" width="120">
-
 <h1>حاسبة المُعدّل</h1>
 <h3>جامعة البلقاء التطبيقية</h3>
 <h3>كلية الطب - دفعة كوروناري</h3>
-
 <hr>
-
 <h3>المعدل السابق</h3>
 <input type="number" id="prevGPA" step="0.0001" placeholder=" إذا ما بدك تدخل المعدل السابق فاترك هذا المربع فارغ ">
-
 <h3>عدد الساعات السابقة</h3>
 <input type="number" id="prevHours" placeholder=" إذا ما بدك تدخل المعدل السابق فاترك هذا المربع فارغ ">
-
 <h3>اختر السنة</h3>
 <select id="yearSelect" onchange="loadSubjects()">
     <option value="">-- اختر --</option>
@@ -92,17 +76,12 @@ button {
     <option value="5">السنة الخامسة</option>
     <option value="6">السنة السادسة</option>
 </select>
-
 <div id="subjects"></div>
-
 <button onclick="calculateGPA()">احسب المعدل</button>
-
 <h2 id="result"></h2>
-
 </div>
 
 <script>
-// قيم الرموز
 const gradeValues = {
     "A": 4,
     "A-": 3.75,
@@ -118,7 +97,6 @@ const gradeValues = {
     "F": 0.5
 };
 
-// المواد حسب السنة
 const subjectsData = {
     4: [
         ["مقدمة في الطب السريري واخلاقيات مهنة الطـــب 1", 4],
@@ -128,7 +106,7 @@ const subjectsData = {
         ["جراحة العظام والمفاصل", 4],
         ["رعاية صحية اولية", 3],
         ["علوم عصبية سريرية", 3]
-    ]
+    ],  // <-- الفاصلة المفقودة هنا
     5: [
         ["الاشعة التشخيصية", 2],
         ["الامراض النسائية والتوليد ١", 8],
@@ -162,40 +140,32 @@ function loadSubjects() {
     const year = document.getElementById("yearSelect").value;
     const div = document.getElementById("subjects");
     div.innerHTML = "";
-
     if (!year) return;
 
-    let table = `
-    <table>
-        <tr>
-            <th>المادة</th>
-            <th>الساعات</th>
-            <th>الرمز</th>
-            <th>استثناء</th>
-        </tr>`;
+    let table = `<table>
+        <thead>
+            <tr><th>المادة</th><th>الساعات</th><th>الرمز</th><th>استثناء</th></tr>
+        </thead>
+        <tbody>`;
 
     subjectsData[year].forEach(sub => {
         table += `
-        <tr data-subject="${sub[0]}">
-            <td class="subject-name">${sub[0]}</td>
-            <td>${sub[1]}</td>
-            <td>
-                <select class="grade" data-hours="${sub[1]}">
-                    <option value="">-- اختر --</option>
-                    ${Object.keys(gradeValues)
-                        .map(g => `<option value="${g}">${g}</option>`)
-                        .join("")}
-                </select>
-            </td>
-            <td>
-                <button onclick="toggleExclude(this)">استثناء</button>
-            </td>
-        </tr>`;
+            <tr data-subject="${sub[0]}">
+                <td class="subject-name">${sub[0]}</td>
+                <td>${sub[1]}</td>
+                <td>
+                    <select class="grade" data-hours="${sub[1]}">
+                        <option value="">-- اختر --</option>
+                        ${Object.keys(gradeValues).map(g => `<option value="${g}">${g}</option>`).join("")}
+                    </select>
+                </td>
+                <td><button onclick="toggleExclude(this)">استثناء</button></td>
+            </tr>
+        `;
     });
-
-    table += "</table>";
+    table += `</tbody></table>`;
     div.innerHTML = table;
-        }
+}
 
 function toggleExclude(button) {
     const row = button.closest("tr");
@@ -226,9 +196,12 @@ function calculateGPA() {
     document.querySelectorAll(".grade").forEach(sel => {
         const row = sel.closest("tr");
         if (sel.value !== "" && !row.classList.contains("excluded-row")) {
-            const hours = parseFloat(sel.dataset.hours);
-            currentHours += hours;
-            currentPoints += hours * gradeValues[sel.value];
+            // استخدام getAttribute لقراءة data-hours بشكل آمن
+            const hours = parseFloat(sel.getAttribute("data-hours"));
+            if (!isNaN(hours)) {
+                currentHours += hours;
+                currentPoints += hours * gradeValues[sel.value];
+            }
         }
     });
 
@@ -236,17 +209,14 @@ function calculateGPA() {
     const totalPoints = (prevGPA * prevHours) + currentPoints;
     const newGPA = totalHours ? (totalPoints / totalHours).toFixed(4) : "0.0000";
 
-    let output =
-        "المعدل التراكمي الجديد : " + newGPA +
-        "\nعدد الساعات التراكمية المحتسبة : " + totalHours;
+    let output = "المعدل التراكمي الجديد : " + newGPA +
+                 "\nعدد الساعات التراكمية المحتسبة : " + totalHours;
 
     if (excludedSubjects.length > 0) {
         output += "\n\nباستثناء المادة / المواد :\n" + excludedSubjects.join(" ، ");
     }
-
     document.getElementById("result").innerText = output;
 }
 </script>
-
 </body>
-    </html>
+</html>
